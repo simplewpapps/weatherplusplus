@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime;
 using Windows.Foundation;
 using System.Threading.Tasks;
 using Windows.Foundation.Collections;
@@ -48,25 +49,6 @@ namespace WeatherTestApp2
 
         private string CityCurrent = "LONDON";
 
-        private Dictionary<string, double[]> cities = new Dictionary<string, double[]>
-        {
-            {"las vegas", new double[] {36.17, -115.14}},
-            {"new york", new double[] {40.71, -74.01}},
-            {"kyiv", new double[] {50.45, 30.52}},
-            {"london", new double[] {51.51, -0.13}},
-            {"paris", new double[] {48.85, 2.35}},
-            {"tokyo", new double[] {35.68, 139.69}},
-            {"sydney", new double[] {-33.87, 151.21}},
-            {"moscow", new double[] {55.75, 37.62}},
-            {"berlin", new double[] {52.52, 13.40}},
-            {"rome", new double[] {41.90, 12.49}},
-            {"kharkiv", new double[] {49.99, 36.23}},
-            {"warsaw", new double[] {52.23, 21.02}},
-            {"lodz", new double[] {51.75, 19.45}},
-            {"bucharest", new double[] {44.42, 26.10}},
-            {"new delhi", new double[] {28.61, 77.20}}
-        };
-
         private async void ChangeCity_Click(object sender, RoutedEventArgs e)
         {
             var inputTextBox = new TextBox { AcceptsReturn = false, Height = 32 };
@@ -82,29 +64,63 @@ namespace WeatherTestApp2
 
             if (result == ContentDialogResult.Primary)
             {
-                string cityName = inputTextBox.Text.Trim().ToLower();
+                string cityName = inputTextBox.Text.Trim();
 
-                if (cities.ContainsKey(cityName))
+                if (string.IsNullOrWhiteSpace(cityName))
                 {
-                    double[] coords = cities[cityName];
-                    Latitude = coords[0];
-                    Longitude = coords[1];
+                    await new MessageDialog("Please enter a valid city name.").ShowAsync();
+                    return;
+                }
 
-                    CityCurrent = CultureInfo.CurrentCulture.TextInfo.ToUpper(cityName);
-                    MainPivot.Title = "WEATHER++ - " + CityCurrent;
+                try
+                {
+                    string geocodingUrl = $"https://geocoding-api.open-meteo.com/v1/search?name={Uri.EscapeDataString(cityName)}&count=1&language=en&format=json";
 
-                    var localSettings = ApplicationData.Current.LocalSettings;
-                    localSettings.Values["LastCity"] = CityCurrent;
+                    HttpClient client = new HttpClient();
+                    string response = await client.GetStringAsync(new Uri(geocodingUrl));
+                    JsonObject json = JsonObject.Parse(response);
 
-                    GetWeather(Latitude, Longitude);
-                    LoadFiveDayForecast(Latitude, Longitude);
+                    if (json.ContainsKey("results"))
+                    {
+                        var results = json.GetNamedArray("results");
+
+                        if (results.Count > 0)
+                        {
+                            var location = results[0].GetObject();
+                            double lat = location.GetNamedNumber("latitude");
+                            double lon = location.GetNamedNumber("longitude");
+                            string resolvedName = location.GetNamedString("name");
+
+                            Latitude = lat;
+                            Longitude = lon;
+                            CityCurrent = resolvedName.ToUpperInvariant();
+                            MainPivot.Title = "WEATHER++ - " + CityCurrent;
+
+                            var localSettings = ApplicationData.Current.LocalSettings;
+                            localSettings.Values["LastCity"] = CityCurrent;
+                            localSettings.Values["Latitude"] = Latitude;
+                            localSettings.Values["Longitude"] = Longitude;
+
+                            GetWeather(Latitude, Longitude);
+                            LoadFiveDayForecast(Latitude, Longitude);
+                        }
+                        else
+                        {
+                            await new MessageDialog("City not found.").ShowAsync();
+                        }
+                    }
+                    else
+                    {
+                        await new MessageDialog("No geocoding results returned.").ShowAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await new MessageDialog("Error: " + ex.Message).ShowAsync();
                 }
             }
-            else
-            {
-                await new MessageDialog("City not found.").ShowAsync();
-            }
         }
+
 
         //private async Task PinCityTile(string cityName)
         //{
@@ -188,28 +204,16 @@ namespace WeatherTestApp2
         {
             this.InitializeComponent();
 
-            GetWeather(Latitude, Longitude);
-
             MainPivot.Title = "WEATHER++ - " + CityCurrent;
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
             var localSettings = ApplicationData.Current.LocalSettings;
 
-            if (localSettings.Values.ContainsKey("SelectedCity"))
+            if (localSettings.Values.ContainsKey("Latitude") && localSettings.Values.ContainsKey("Longitude"))
             {
-                string savedCity = localSettings.Values["SelectedCity"].ToString();
-                if (cities.ContainsKey(savedCity))
-                {
-                    double[] coords = cities[savedCity];
-                    Latitude = coords[0];
-                    Longitude = coords[1];
-                }
-            }
-
-            if (localSettings.Values.ContainsKey("IsCelsius"))
-            {
-                AppSettings.IsCelsius = (bool)localSettings.Values["IsCelsius"];
+                Latitude = (double)localSettings.Values["Latitude"];
+                Longitude = (double)localSettings.Values["Longitude"];
             }
 
             if (localSettings.Values.ContainsKey("LastCity"))
@@ -218,24 +222,24 @@ namespace WeatherTestApp2
             }
             else
             {
-                CityCurrent = "LONDON"; //default city
+                CityCurrent = "LONDON"; // default
             }
 
-            MainPivot.Title = "WEATHER++ - " + CityCurrent;
 
-            if (cities.ContainsKey(CityCurrent.ToLower()))
+            if (localSettings.Values.ContainsKey("IsCelsius"))
             {
-                double[] coords = cities[CityCurrent.ToLower()];
-                Latitude = coords[0];
-                Longitude = coords[1];
+                AppSettings.IsCelsius = (bool)localSettings.Values["IsCelsius"];
             }
 
 
 
             ShowFirstRunMessage();
-
+            MainPivot.Title = "WEATHER++ - " + CityCurrent;
             GetWeather(Latitude, Longitude);
             LoadFiveDayForecast(Latitude, Longitude);
+
+
+
         }
 
         private async void ShowFirstRunMessage()
@@ -337,6 +341,39 @@ namespace WeatherTestApp2
 
             //ToastNotificationManager.CreateToastNotifier().AddToSchedule(scheduledToast);
         //}
+
+        public void LiveTileYAY(double temp, string cond)
+        {
+            string degreeSymbol = AppSettings.IsCelsius ? "°C" : "°F";
+
+            XmlDocument xml = new XmlDocument();
+
+            XmlElement tile = xml.CreateElement("tile");
+            xml.AppendChild(tile);
+
+            XmlElement visual = xml.CreateElement("visual");
+            visual.SetAttribute("version", "2");
+            tile.AppendChild(visual);
+
+            XmlElement binding = xml.CreateElement("binding");
+            binding.SetAttribute("template", "TileSquare150x150Text01");
+            visual.AppendChild(binding);
+
+            XmlElement textTemp = xml.CreateElement("text");
+            textTemp.SetAttribute("id", "1");
+            textTemp.InnerText = temp.ToString() + degreeSymbol;
+            binding.AppendChild(textTemp);
+
+            XmlElement textCond = xml.CreateElement("text");
+            textCond.SetAttribute("id", "2");
+            textCond.InnerText = cond;
+            binding.AppendChild(textCond);
+
+            TileNotification tilenotif = new TileNotification(xml);
+
+            TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
+            updater.Update(tilenotif);
+        }
 
         private async void GetWeather(double lat, double lon)
         {
@@ -440,6 +477,7 @@ namespace WeatherTestApp2
                 }
 
                 //UpdateTile(tempIntToday, windSpeed);
+                LiveTileYAY(tempValueToday, status);
 
                 string urlTomorrow = "https://api.open-meteo.com/v1/forecast?latitude="
                     + lat.ToString(System.Globalization.CultureInfo.InvariantCulture)
@@ -449,6 +487,8 @@ namespace WeatherTestApp2
 
                 string jsonTomorrow = await client.GetStringAsync(urlTomorrow);
                 JsonObject rootTomorrow = JsonObject.Parse(jsonTomorrow);
+
+
 
                 //Tomorrow
                 JsonObject dailyForecast = rootTomorrow.GetNamedObject("daily");
@@ -496,15 +536,16 @@ namespace WeatherTestApp2
             catch (Exception ex)
             {
                 var error = new MessageDialog("Error: " + ex.Message);
-                var ignore = error.ShowAsync();
+                await error.ShowAsync();
             }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
             GetWeather(Latitude, Longitude);
             LoadFiveDayForecast(Latitude, Longitude);
+
+            base.OnNavigatedTo(e);
 
             if (!AppSettings.IsCelsius)
             {

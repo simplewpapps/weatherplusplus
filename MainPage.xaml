@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WeatherTestApp2"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    d:DataContext="{d:DesignInstance Type=local:App, IsDesignTimeCreatable=True}"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="Transparent">
@@ -26,32 +25,32 @@
             <PivotItem Header="today">
                 <Grid>
                     <StackPanel Margin="0,0,0,0">
-                        <TextBlock x:Name="TodayVisible" FontSize="35" FontWeight="Light" Margin="0,100,0,0" Text="Visibility: Loading..."/>
-                        <TextBlock x:Name="TodayPressure" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Pressure: Loading..."/>
-                        <TextBlock x:Name="TodaySnow" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Snow: Loading..."/>
-                        <TextBlock x:Name="TodayPrecip" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Rain: Loading..."/>
-                        <TextBlock x:Name="TodayUV" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="UV: Loading..."/>
-                        <TextBlock x:Name="TodayHumid" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Humidity: Loading..."/>
-                        <TextBlock x:Name="TodayCondition" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Wind: Loading..."/>
-                        <TextBlock x:Name="TodayFeelsLike" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Feels like: Loading..."/>
-                        <TextBlock x:Name="TypeToday" FontSize="42.5" FontWeight="Light" Margin="0,0,0,0" Text="Loading..."/>
-                        <TextBlock x:Name="TodayTemp" FontSize="112" FontWeight="SemiLight" Margin="0,0,0,0" Text="--.-°"/>
+                        <TextBlock x:Name="TodayVisible" FontSize="30" FontWeight="Light" Margin="0,175,0,0" Text="Visibility: Loading..."/>
+                        <TextBlock x:Name="TodayPressure" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Pressure: Loading..."/>
+                        <TextBlock x:Name="TodaySnow" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Snow: Loading..."/>
+                        <TextBlock x:Name="TodayPrecip" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Rain: Loading..."/>
+                        <TextBlock x:Name="TodayUV" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="UV: Loading..."/>
+                        <TextBlock x:Name="TodayHumid" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Humidity: Loading..."/>
+                        <TextBlock x:Name="TodayCondition" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Wind: Loading..."/>
+                        <TextBlock x:Name="TodayFeelsLike" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Feels like: Loading..."/>
+                        <TextBlock x:Name="TypeToday" FontSize="40" FontWeight="Light" Margin="0,0,0,0" Text="Loading..."/>
+                        <TextBlock x:Name="TodayTemp" FontSize="106" FontWeight="SemiLight" Margin="0,0,0,0" Text="--.-°"/>
                     </StackPanel>
                 </Grid>                
             </PivotItem>
             <PivotItem Header="tomorrow">
                 <Grid>
                     <StackPanel Margin="0,0,0,0">
-                        <TextBlock x:Name="TomorrowVisible" FontSize="35" FontWeight="Light" Margin="0,100,0,0" Text="Visibility: Loading..."/>
-                        <TextBlock x:Name="TomorrowPressure" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Pressure: Loading..."/>
-                        <TextBlock x:Name="TomorrowSnow" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Snow: Loading..."/>
-                        <TextBlock x:Name="TomorrowPrecip" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Rain: Loading..."/>
-                        <TextBlock x:Name="TomorrowUV" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="UV: Loading..."/>
-                        <TextBlock x:Name="TomorrowHumid" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Humidity: Loading..."/>
-                        <TextBlock x:Name="TomorrowCondition" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Wind: Loading..."/>
-                        <TextBlock x:Name="TomorrowFeelsLike" FontSize="35" FontWeight="Light" Margin="0,0,0,0" Text="Feels like: Loading..."/>
-                        <TextBlock x:Name="TypeTomorrow" FontSize="42.5" FontWeight="Light" Margin="0,0,0,0" Text="Loading..."/>
-                        <TextBlock x:Name="TomorrowTemp" FontSize="112" FontWeight="SemiLight" Margin="0,0,0,0" Text="--.-°"/>
+                        <TextBlock x:Name="TomorrowVisible" FontSize="30" FontWeight="Light" Margin="0,175,0,0" Text="Visibility: Loading..."/>
+                        <TextBlock x:Name="TomorrowPressure" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Pressure: Loading..."/>
+                        <TextBlock x:Name="TomorrowSnow" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Snow: Loading..."/>
+                        <TextBlock x:Name="TomorrowPrecip" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Rain: Loading..."/>
+                        <TextBlock x:Name="TomorrowUV" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="UV: Loading..."/>
+                        <TextBlock x:Name="TomorrowHumid" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Humidity: Loading..."/>
+                        <TextBlock x:Name="TomorrowCondition" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Wind: Loading..."/>
+                        <TextBlock x:Name="TomorrowFeelsLike" FontSize="30" FontWeight="Light" Margin="0,0,0,0" Text="Feels like: Loading..."/>
+                        <TextBlock x:Name="TypeTomorrow" FontSize="40" FontWeight="Light" Margin="0,0,0,0" Text="Loading..."/>
+                        <TextBlock x:Name="TomorrowTemp" FontSize="106" FontWeight="SemiLight" Margin="0,0,0,0" Text="--.-°"/>
                     </StackPanel>
                 </Grid>
             </PivotItem>
@@ -60,9 +59,9 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,0" Orientation="Vertical" HorizontalAlignment="Center">
-                                <TextBlock Text="{Binding Date}" FontSize="25" TextAlignment="Center"/>
-                                <TextBlock Text="{Binding TempMax}" FontSize="30" FontWeight="SemiBold" TextAlignment="Center"/>
-                                <TextBlock Text="{Binding TempMin}" FontSize="30"  FontWeight="SemiBold" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding Date}" FontSize="20" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding TempMax}" FontSize="25" FontWeight="SemiBold" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding TempMin}" FontSize="25"  FontWeight="SemiBold" TextAlignment="Center"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
