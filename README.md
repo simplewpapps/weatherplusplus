@@ -1,15 +1,15 @@
-# weatherplusplus
+# Weather++
 Weather++ is a open-source weather forecast app for Windows Phone using https://open-meteo.com as a weather provider.
 Features:
 - Current weather with unit system change (Celsius/Farenheit)
 - Forecast for tomorrow
-- Forecast for 5 days
+- Hourly forecast
 - Viewing weather conditions
 - Viewing wind speed (km/h)
 - Viewing "feels like"
 - Viewing humidity (%), UV index
-- Viewing precipitation and snow (mm, cm)
-- Viewing pressure (hPa) and visibility (km)
+- Viewing rain and snow (mm, cm respectively)
+- Viewing visibility (km)
 
 
 
@@ -64,3 +64,9 @@ Snow image by adege: https://pixabay.com/photos/snow-new-zealand-snowdrift-snowy
 
 
 Thunderstorm image by bogitw: https://pixabay.com/photos/flash-sky-clouds-energy-1156822/
+
+
+Contact me
+
+
+Open-Meteo team, if you want to contact me for any reason, email me to simplewpapps@gmail.com
