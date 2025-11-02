@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+  <data name="WeatherCode_0" xml:space="preserve">
+    <value>Ясно</value>
+  </data>
+  <data name="WeatherCode_1" xml:space="preserve">
+    <value>Частково ясно</value>
+  </data>
+  <data name="WeatherCode_2" xml:space="preserve">
+    <value>Частково хмарно</value>
+  </data>
+  <data name="WeatherCode_3" xml:space="preserve">
+    <value>Хмарно</value>
+  </data>
+  <data name="WeatherCode_45" xml:space="preserve">
+    <value>Туман</value>
+  </data>
+  <data name="WeatherCode_48" xml:space="preserve">
+    <value>Морозний туман</value>
+  </data>
+  <data name="WeatherCode_51" xml:space="preserve">
+    <value>Мряка</value>
+  </data>
+  <data name="WeatherCode_53" xml:space="preserve">
+    <value>Слабка мряка</value>
+  </data>
+  <data name="WeatherCode_55" xml:space="preserve">
+    <value>Середня мряка</value>
+  </data>
+  <data name="WeatherCode_56" xml:space="preserve">
+    <value>Крижана мряка</value>
+  </data>
+  <data name="WeatherCode_57" xml:space="preserve">
+    <value>Сильна крижана мряка</value>
+  </data>
+  <data name="WeatherCode_61" xml:space="preserve">
+    <value>Дощ</value>
+  </data>
+  <data name="WeatherCode_63" xml:space="preserve">
+    <value>Середній дощ</value>
+  </data>
+  <data name="WeatherCode_65" xml:space="preserve">
+    <value>Сильний дощ</value>
+  </data>
+  <data name="WeatherCode_66" xml:space="preserve">
+    <value>Крижаний дощ</value>
+  </data>
+  <data name="WeatherCode_67" xml:space="preserve">
+    <value>Сильний крижаний дощ</value>
+  </data>
+  <data name="WeatherCode_71" xml:space="preserve">
+    <value>Сніг</value>
+  </data>
+  <data name="WeatherCode_73" xml:space="preserve">
+    <value>Середній сніг</value>
+  </data>
+  <data name="WeatherCode_75" xml:space="preserve">
+    <value>Сильний сніг</value>
+  </data>
+  <data name="WeatherCode_77" xml:space="preserve">
+    <value>Снігові крупинки</value>
+  </data>
+  <data name="WeatherCode_80" xml:space="preserve">
+    <value>Злива</value>
+  </data>
+  <data name="WeatherCode_81" xml:space="preserve">
+    <value>Середня злива</value>
+  </data>
+  <data name="WeatherCode_82" xml:space="preserve">
+    <value>Сильна злива</value>
+  </data>
+  <data name="WeatherCode_85" xml:space="preserve">
+    <value>Снігопад</value>
+  </data>
+  <data name="WeatherCode_86" xml:space="preserve">
+    <value>Сильний снігопад</value>
+  </data>
+  <data name="WeatherCode_95" xml:space="preserve">
+    <value>Гроза</value>
+  </data>
+  <data name="WeatherCode_96" xml:space="preserve">
+    <value>Гроза з градом</value>
+  </data>
+  <data name="WeatherCode_99" xml:space="preserve">
+    <value>Сильна гроза з градом</value>
+  </data>
+  <data name="FeelsLang" xml:space="preserve">
+    <value>Відчув. як: {0}</value>
+  </data>
+  <data name="HumidLang" xml:space="preserve">
+    <value>Вологість: {0}%</value>
+  </data>
+  <data name="PivotDaily.Header" xml:space="preserve">
+    <value>по дням</value>
+  </data>
+  <data name="PivotHourly.Header" xml:space="preserve">
+    <value>по годинам</value>
+  </data>
+  <data name="PivotToday.Header" xml:space="preserve">
+    <value>сьогодні</value>
+  </data>
+  <data name="RainLang" xml:space="preserve">
+    <value>Опади: {0} мм</value>
+  </data>
+  <data name="SnowLang" xml:space="preserve">
+    <value>Сніг: {0} см</value>
+  </data>
+  <data name="UVLang" xml:space="preserve">
+    <value>УФ-індекс: {0}</value>
+  </data>
+  <data name="UVValue" xml:space="preserve">
+    <value>УФ-індекс:</value>
+  </data>
+  <data name="VisibleLang" xml:space="preserve">
+    <value>Видимість: {0} км</value>
+  </data>
+  <data name="WindLang" xml:space="preserve">
+    <value>Вітер: {0} км/г</value>
+  </data>
+  <data name="AboutButton.Label" xml:space="preserve">
+    <value>о додатку та атрибуція</value>
+  </data>
+  <data name="CityButton.Label" xml:space="preserve">
+    <value>місто</value>
+  </data>
+  <data name="RefreshButton.Label" xml:space="preserve">
+    <value>оновити</value>
+  </data>
+  <data name="SystemButton.Label" xml:space="preserve">
+    <value>система градусів</value>
+  </data>
+</root>
