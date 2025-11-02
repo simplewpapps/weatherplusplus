@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="WeatherTestApp2.SearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WeatherTestApp2"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="LayoutRoot">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="SearchBox" PlaceholderText="Enter the city..." Grid.Row="0" InputScope="Search" KeyDown="SearchBox_KeyDown"/>
+            <ListView Margin="0,0,0,0" x:Name="ResultsList" Grid.Row="1" SelectionChanged="ResultsList_SelectionChanged" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontSize="32" Margin="0,0,0,0"/>
+                            <TextBlock FontSize="20" Foreground="Gray" Margin="0,0,0,10">
+                                <Run Text="{Binding Country}"/>
+                                <Run Text=","/>
+                                <Run Text="{Binding AdminOne}"/>
+                                <Run Text=","/>
+                                <Run Text="{Binding AdminTwo}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</Page>

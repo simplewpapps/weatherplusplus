@@ -24,102 +24,80 @@ using System.Globalization;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
+using Windows.ApplicationModel.Resources;
 
 namespace WeatherTestApp2
 {
     public sealed partial class MainPage : Page
     {
-        private Dictionary<string, string> WeatherImages = new Dictionary<string, string>()
+        private Dictionary<int, string> WeatherImages = new Dictionary<int, string>()
                 {
-                    { "Clear", "clear.jpg"},
-                    { "Mainly clear", "clear.jpg"},
-                    { "Cloudy", "cloudy.jpg"},
-                    { "Drizzle", "drizzle.jpg"},
-                    { "Freezing drizzle", "drizzle.jpg"},
-                    { "Fog", "fog.jpg"},
-                    { "Rain", "rain.jpg"},
-                    { "Rain showers", "rain_showers.jpg"},
-                    { "Snow", "snow.jpg"},
-                    { "Thunderstorm", "thunderstorm.jpg"},
-                    { "Thunderstorm with hail", "thunderstorm.jpg"}
+                    { 0, "clear.jpg"},
+                    { 1, "clear.jpg"},
+                    { 2, "cloudy.jpg"},
+                    { 3, "cloudy.jpg"},
+                    { 51, "drizzle.jpg"},
+                    { 56, "drizzle.jpg"},
+                    { 45, "fog.jpg"},
+                    { 61, "rain.jpg"},
+                    { 80, "rain_showers.jpg"},
+                    { 71, "snow.jpg"},
+                    { 95, "thunderstorm.jpg"},
+                    { 96, "thunderstorm.jpg"}
                 };
-
-        private double Latitude = 51.51;
-        private double Longitude = -0.13;
-
-        private string CityCurrent = "LONDON";
-
-        private async void ChangeCity_Click(object sender, RoutedEventArgs e)
+        public static readonly Dictionary<int, string> weatherDict = new Dictionary<int, string>
         {
-            var inputTextBox = new TextBox { AcceptsReturn = false, Height = 32 };
-            var dialog = new ContentDialog
-            {
-                Title = "Enter name of the city",
-                Content = inputTextBox,
-                PrimaryButtonText = "OK",
-                SecondaryButtonText = "Cancel"
-            };
+            {0, "0"}, //Clear
+            {1, "1"}, //Mainly clear
+            {2, "2"}, //Partly cloudy
+            {3, "3"}, //Cloudy
+            {45, "45"}, //Fog
+            {48, "48"}, //Rime fog
+            {51, "51"}, //Drizzle
+            {53, "53"}, //Drizzle
+            {55, "55"}, //Drizzle
+            {56, "56"}, //Freezing drizzle
+            {57, "57"}, //Freezing drizzle
+            {61, "61"}, //Rain
+            {63, "63"}, //Rain
+            {65, "65"}, //Heavy rain
+            {66, "66"}, //Freezing rain
+            {67, "67"}, //Freezing rain
+            {71, "71"}, //Snow
+            {73, "73"}, //Snow
+            {75, "75"}, //Heavy snow
+            {77, "77"}, //Snow grains
+            {80, "80"}, //Rain showers
+            {81, "81"}, //Rain showers
+            {82, "82"}, //Heavy rain showers
+            {85, "85"}, //Snow showers
+            {86, "86"}, //Heavy snow showers
+            {95, "95"}, //Thunderstorm
+            {96, "96"}, //Thunderstorm with hail
+            {99, "99"} //Thunderstorm with hail
+        };
 
-            var result = await dialog.ShowAsync();
+        public void UpdateCity(string cityName, double lat, double lon)
+        {
+            AppSettings.CityCurrent = cityName;
+            AppSettings.Latitude = lat;
+            AppSettings.Longitude = lon;
 
-            if (result == ContentDialogResult.Primary)
-            {
-                string cityName = inputTextBox.Text.Trim();
+            MainPivot.Title = AppSettings.CityCurrent.ToUpperInvariant();
+            GetWeather(AppSettings.Latitude, AppSettings.Longitude);
 
-                if (string.IsNullOrWhiteSpace(cityName))
-                {
-                    await new MessageDialog("Please enter a valid city name.").ShowAsync();
-                    return;
-                }
-
-                try
-                {
-                    string geocodingUrl = $"https://geocoding-api.open-meteo.com/v1/search?name={Uri.EscapeDataString(cityName)}&count=1&language=en&format=json";
-
-                    HttpClient client = new HttpClient();
-                    string response = await client.GetStringAsync(new Uri(geocodingUrl));
-                    JsonObject json = JsonObject.Parse(response);
-
-                    if (json.ContainsKey("results"))
-                    {
-                        var results = json.GetNamedArray("results");
-
-                        if (results.Count > 0)
-                        {
-                            var location = results[0].GetObject();
-                            double lat = location.GetNamedNumber("latitude");
-                            double lon = location.GetNamedNumber("longitude");
-                            string resolvedName = location.GetNamedString("name");
-
-                            Latitude = lat;
-                            Longitude = lon;
-                            CityCurrent = resolvedName.ToUpperInvariant();
-                            MainPivot.Title = "WEATHER++ - " + CityCurrent;
-
-                            var localSettings = ApplicationData.Current.LocalSettings;
-                            localSettings.Values["LastCity"] = CityCurrent;
-                            localSettings.Values["Latitude"] = Latitude;
-                            localSettings.Values["Longitude"] = Longitude;
-
-                            GetWeather(Latitude, Longitude);
-                            LoadFiveDayForecast(Latitude, Longitude);
-                        }
-                        else
-                        {
-                            await new MessageDialog("City not found.").ShowAsync();
-                        }
-                    }
-                    else
-                    {
-                        await new MessageDialog("No geocoding results returned.").ShowAsync();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await new MessageDialog("Error: " + ex.Message).ShowAsync();
-                }
-            }
+            // Сохраняем в LocalSettings
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values["LastCity"] = AppSettings.CityCurrent;
+            localSettings.Values["Latitude"] = AppSettings.Latitude;
+            localSettings.Values["Longitude"] = AppSettings.Longitude;
         }
+
+
+        //private double Latitude = 51.51;
+        //private double Longitude = -0.13;
+
+        //private string CityCurrent = "LONDON";
 
 
         //private async Task PinCityTile(string cityName)
@@ -184,27 +162,19 @@ namespace WeatherTestApp2
 
             ApplicationData.Current.LocalSettings.Values["IsCelsius"] = AppSettings.IsCelsius;
 
-            GetWeather(Latitude, Longitude);
-            LoadFiveDayForecast(Latitude, Longitude);
+            GetWeather(AppSettings.Latitude, AppSettings.Longitude);
+            LoadHourlyForecast(AppSettings.Latitude, AppSettings.Longitude);
+            LoadDailyForecast(AppSettings.Latitude, AppSettings.Longitude);
         }
 
-        public static class AppSettings
-        {
-            private static bool _isCelsius = true;
 
-            public static bool IsCelsius
-            {
-                get { return _isCelsius;  }
-                set { _isCelsius = value;  }
-            }
-        }
 
     
         public MainPage()
         {
             this.InitializeComponent();
 
-            MainPivot.Title = "WEATHER++ - " + CityCurrent;
+            MainPivot.Title = AppSettings.CityCurrent.ToUpperInvariant();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
@@ -212,17 +182,17 @@ namespace WeatherTestApp2
 
             if (localSettings.Values.ContainsKey("Latitude") && localSettings.Values.ContainsKey("Longitude"))
             {
-                Latitude = (double)localSettings.Values["Latitude"];
-                Longitude = (double)localSettings.Values["Longitude"];
+                AppSettings.Latitude = (double)localSettings.Values["Latitude"];
+                AppSettings.Longitude = (double)localSettings.Values["Longitude"];
             }
 
             if (localSettings.Values.ContainsKey("LastCity"))
             {
-                CityCurrent = localSettings.Values["LastCity"].ToString();
+                AppSettings.CityCurrent = localSettings.Values["LastCity"].ToString();
             }
             else
             {
-                CityCurrent = "LONDON"; // default
+                AppSettings.CityCurrent = "LONDON"; // default
             }
 
 
@@ -231,15 +201,23 @@ namespace WeatherTestApp2
                 AppSettings.IsCelsius = (bool)localSettings.Values["IsCelsius"];
             }
 
-
-
             ShowFirstRunMessage();
-            MainPivot.Title = "WEATHER++ - " + CityCurrent;
-            GetWeather(Latitude, Longitude);
-            LoadFiveDayForecast(Latitude, Longitude);
+            MainPivot.Title = AppSettings.CityCurrent.ToUpperInvariant();
+            GetWeather(AppSettings.Latitude, AppSettings.Longitude);
+            LoadHourlyForecast(AppSettings.Latitude, AppSettings.Longitude);
+            LoadDailyForecast(AppSettings.Latitude, AppSettings.Longitude);
+        }
 
+        private void ChangeCity_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SearchPage));
+        }
 
-
+        public static string Localized(string key, params object[] args)
+        {
+            var loader = new ResourceLoader();
+            string format = loader.GetString(key);
+            return string.Format(format, args);
         }
 
         private async void ShowFirstRunMessage()
@@ -250,97 +228,177 @@ namespace WeatherTestApp2
             {
                 localSettings.Values["HasRunBefore"] = true;
 
-                var dialog = new MessageDialog("Welcome to Weather++ app! Right now current city to show weather is set to LONDON, but you can change it by tapping globe icon. List of available cities is in Reddit post. Thanks!");
+                var dialog = new MessageDialog("Welcome to Weather++ app! Right now current city to show weather is set to LONDON, but you can change it by tapping globe icon. Thanks!");
                 await dialog.ShowAsync();
             }
         }
 
-        public class ForecastDay
+        public class HourlyForecast
         {
-            public string Date { get; set; }
-            public string TempMax { get; set; }
-            public string TempMin { get; set; }
+            public string Time { get; set; }
+            public string Temperature { get; set; }
+            public string Status { get; set; }
         }
 
-        private async void LoadFiveDayForecast(double lat, double lon)
+        public class DailyForecast
         {
-            string url = "https://api.open-meteo.com/v1/forecast?latitude="
-                    + lat.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + "&longitude="
-                    + lon.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + "&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&current_weather=true&timezone=auto";
+            public string Day { get; set; }
+            public string TemperatureMax { get; set; }
+            public string TemperatureMin { get; set; }
+            public string Status { get; set; }
+        }
 
-            HttpClient client = new HttpClient();
-            string response = await client.GetStringAsync(new Uri(url));
-
-            string degreeSymbol = AppSettings.IsCelsius ? "°C" : "°F";
-
-            JsonObject json = JsonObject.Parse(response);
-            var daily = json.GetNamedObject("daily");
-
-            var dates = daily.GetNamedArray("time");
-            var maxTemps = daily.GetNamedArray("temperature_2m_max");
-            var minTemps = daily.GetNamedArray("temperature_2m_min");
-
-            List<ForecastDay> forecast = new List<ForecastDay>();
-
-            for (int i = 0; i < 5; i++) //first five days
-            {
-                double max = maxTemps[i].GetNumber();
-                double min = minTemps[i].GetNumber();
-
-                if (!AppSettings.IsCelsius)
-                {
-                    max = max * 9 / 5 + 32;
-                    min = min * 9 / 5 + 32;
-                }
-
-                forecast.Add(new ForecastDay
-                {
-                    Date = dates[i].GetString(),
-                    TempMax = Convert.ToString(max, CultureInfo.InvariantCulture) + degreeSymbol,
-                    TempMin = Convert.ToString(min, CultureInfo.InvariantCulture) + degreeSymbol,
-                });
-            }
-
-            ForecastList.ItemsSource = forecast;
+        private async void MessageBox(string msg)
+        {
+            var dialog = new MessageDialog(msg);
+            await dialog.ShowAsync();
         }
 
         private async void Provider_Info(object sender, RoutedEventArgs e)
         {
-            var dialog = new MessageDialog("Weather++ is a WP8.1 weather app with simple features and data. \nWeather provided by Open-Meteo: https://open-meteo.com/. \n \nImage Credits: \n \nSunny image by jplenio: https://pixabay.com/photos/sun-sky-blue-sunlight-sunbeam-3588618/ \n \nCloudy image by JACLOU-DL: https://pixabay.com/photos/clouds-cumulus-cloudy-sky-air-5481190/ \n \nDrizzle image by gaborszoke: https://pixabay.com/photos/rain-car-window-gloomy-raindrops-4440791/ \n \nFog image by Nature_Brothers: https://pixabay.com/photos/fog-trees-forest-foggy-woods-6122490/ \n \nRain clouds image by ELG21: https://pixabay.com/photos/clouds-storm-rain-weather-air-9550640/ \n \nRain showers image by Hans: https://pixabay.com/photos/downpour-rain-shower-rain-shower-8823/ \n \nSnow image by adege: https://pixabay.com/photos/snow-new-zealand-snowdrift-snowy-4066640/ \n \nThunderstorm image by bogitw: https://pixabay.com/photos/flash-sky-clouds-energy-1156822/");
+            var dialog = new MessageDialog("Weather++ is a WP8.1 weather app with simple features and data. \nWeather provided by Open-Meteo: https://open-meteo.com/. \nRomanian translation by: u/MildOff2024 \n \nImage Credits: \n \nSunny image by jplenio: https://pixabay.com/photos/sun-sky-blue-sunlight-sunbeam-3588618/ \n \nCloudy image by JACLOU-DL: https://pixabay.com/photos/clouds-cumulus-cloudy-sky-air-5481190/ \n \nDrizzle image by gaborszoke: https://pixabay.com/photos/rain-car-window-gloomy-raindrops-4440791/ \n \nFog image by Nature_Brothers: https://pixabay.com/photos/fog-trees-forest-foggy-woods-6122490/ \n \nRain clouds image by ELG21: https://pixabay.com/photos/clouds-storm-rain-weather-air-9550640/ \n \nRain showers image by Hans: https://pixabay.com/photos/downpour-rain-shower-rain-shower-8823/ \n \nSnow image by adege: https://pixabay.com/photos/snow-new-zealand-snowdrift-snowy-4066640/ \n \nThunderstorm image by bogitw: https://pixabay.com/photos/flash-sky-clouds-energy-1156822/");
             await dialog.ShowAsync();
-        }
-
-        private void RefreshWeather_Click(object sender, RoutedEventArgs e)
-        {
-            GetWeather(Latitude, Longitude);
-            LoadFiveDayForecast(Latitude, Longitude);
-        }
-
-        public void Update()
-        {
-            GetWeather(Latitude, Longitude);
-            LoadFiveDayForecast(Latitude, Longitude);
         }
 
         //private void ShowWeatherToast(double temp, double feels)
         //{
-            //string degreeSymbol = AppSettings.IsCelsius ? "°C" : "°F";
+        //string degreeSymbol = AppSettings.IsCelsius ? "°C" : "°F";
 
-            //string message = "Today's weather " +
-                             //temp.ToString("F0") + degreeSymbol +
-                             //", feels like " + feels.ToString("F0") + degreeSymbol + ".";
-            //var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-            //var stringElements = toastXml.GetElementsByTagName("text");
-            //stringElements[0].AppendChild(toastXml.CreateTextNode("Weather++"));
-            //stringElements[1].AppendChild(toastXml.CreateTextNode(message));
+        //string message = "Today's weather " +
+        //temp.ToString("F0") + degreeSymbol +
+        //", feels like " + feels.ToString("F0") + degreeSymbol + ".";
+        //var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+        //var stringElements = toastXml.GetElementsByTagName("text");
+        //stringElements[0].AppendChild(toastXml.CreateTextNode("Weather++"));
+        //stringElements[1].AppendChild(toastXml.CreateTextNode(message));
 
-            //DateTimeOffset scheduledTime = DateTimeOffset.Now.AddMinutes(30);
-            //var scheduledToast = new ScheduledToastNotification(toastXml, scheduledTime);
+        //DateTimeOffset scheduledTime = DateTimeOffset.Now.AddMinutes(30);
+        //var scheduledToast = new ScheduledToastNotification(toastXml, scheduledTime);
 
-            //ToastNotificationManager.CreateToastNotifier().AddToSchedule(scheduledToast);
+        //ToastNotificationManager.CreateToastNotifier().AddToSchedule(scheduledToast);
         //}
+
+        private async void LoadDailyForecast(double lat, double lon)
+        {
+            try
+            {
+                var client = new HttpClient();
+                string url = "https://api.open-meteo.com/v1/forecast?latitude="
+                    + lat.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + "&longitude="
+                    + lon.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + "&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto";
+                string json = await client.GetStringAsync(url);
+                JsonObject root = JsonObject.Parse(json);
+
+                JsonObject daily = root.GetNamedObject("daily");
+                JsonArray days = daily.GetNamedArray("time");
+                JsonArray tempsMax = daily.GetNamedArray("temperature_2m_max");
+                JsonArray tempsMin = daily.GetNamedArray("temperature_2m_min");
+                JsonArray codes = daily.GetNamedArray("weather_code");
+
+                var list = new List<DailyForecast>();
+
+                DateTime now = DateTime.Today;
+
+                int start = 0;
+
+                for (int i = 0; i < days.Count; i++)
+                {
+                    DateTime t = DateTime.Parse(days[i].GetString());
+                    if (t.Date <= now)
+                        continue;
+                }
+
+                for (int i = start; i < start + 7 && i < (int)days.Count; i++)
+                {
+                    string day = DateTime.Parse(days[i].GetString()).ToString("MMM dd");
+                    double tempMax = tempsMax[i].GetNumber();
+                    double tempMin = tempsMin[i].GetNumber();
+                    if (!AppSettings.IsCelsius)
+                    {
+                        tempMax = tempMax * 9 / 5 + 32;
+                        tempMin = tempMin * 9 / 5 + 32;
+                    }
+                    int code = (int)codes[i].GetNumber();
+                    string status = Localized("WeatherCode_" + weatherDict[code]);
+
+                    list.Add(new DailyForecast
+                    {
+                        Day = day,
+                        TemperatureMax = tempMax.ToString("F0") + (AppSettings.IsCelsius ? "°C" : "°F") + " - " + tempMin.ToString("F0") + (AppSettings.IsCelsius ? "°C" : "°F"),
+                        //TemperatureMin = tempMin.ToString("F0") + (AppSettings.IsCelsius ? "°C" : "°F"),
+                        Status = status
+                    });
+
+                }
+                DailyList.ItemsSource = list;
+            }
+            catch (Exception ex)
+            {
+                await new MessageDialog("Error loading daily forecast: " + ex.Message).ShowAsync();
+            }
+        }
+
+        private async void LoadHourlyForecast(double lat, double lon)
+        {
+            try
+            {
+                var client = new HttpClient();
+                string url = "https://api.open-meteo.com/v1/forecast?latitude="
+                    + lat.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + "&longitude="
+                    + lon.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + "&hourly=temperature_2m,weathercode&timezone=auto";
+                string json = await client.GetStringAsync(url);
+                JsonObject root = JsonObject.Parse(json);
+
+                JsonObject hourly = root.GetNamedObject("hourly");
+                JsonArray times = hourly.GetNamedArray("time");
+                JsonArray temps = hourly.GetNamedArray("temperature_2m");
+                JsonArray codes = hourly.GetNamedArray("weathercode");
+
+                var list = new List<HourlyForecast>();
+
+                DateTime now = DateTime.UtcNow;
+
+                int startIndex = 0;
+
+                for (int i = 0; i < times.Count; i++)
+                {
+                    DateTime t = DateTime.Parse(times[i].GetString());
+                    if (t >= now)
+                    {
+                        startIndex = i;
+                        break;
+                    }
+                }
+
+                for (int i = startIndex; i < startIndex + 12 && i < (int)times.Count; i++)
+                {
+                    string time = DateTime.Parse(times[i].GetString()).ToLocalTime().ToString("HH:mm");
+                    double temp = temps[i].GetNumber();
+                    if (!AppSettings.IsCelsius)
+                        temp = temp * 9 / 5 + 32;
+                    int code = (int)codes[i].GetNumber();
+                    string status = Localized("WeatherCode_" + weatherDict[code]);
+
+                    list.Add(new HourlyForecast
+                    {
+                        Time = time,
+                        Temperature = temp.ToString("F0") + (AppSettings.IsCelsius ? "°C" : "°F"),
+                        Status = status
+                    });
+                }
+
+                HourlyList.ItemsSource = list;
+            }
+            catch (Exception ex)
+            {
+                await new MessageDialog("Error loading hourly forecast: " + ex.Message).ShowAsync();
+            }
+        }
+
 
         public void LiveTileYAY(double temp, string cond)
         {
@@ -384,7 +442,7 @@ namespace WeatherTestApp2
                     + lat.ToString(System.Globalization.CultureInfo.InvariantCulture)
                     + "&longitude="
                     + lon.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + "&hourly=temperature_2m,windspeed_10m,uv_index,precipitation,snowfall,apparent_temperature,relativehumidity_2m,weathercode,surface_pressure,visibility&current_weather=true&timezone=auto";
+                    + "&hourly=temperature_2m,windspeed_10m,uv_index,rain,snowfall,apparent_temperature,relativehumidity_2m,weathercode,surface_pressure,visibility&current_weather=true&timezone=auto";
                 string json = await client.GetStringAsync(url);
                 JsonObject root = JsonObject.Parse(json);
 
@@ -393,7 +451,7 @@ namespace WeatherTestApp2
                 //Today
                 JsonObject hourly = root.GetNamedObject("hourly");
                 JsonArray uvArray = hourly.GetNamedArray("uv_index");
-                JsonArray precipitationArray = hourly.GetNamedArray("precipitation");
+                JsonArray precipitationArray = hourly.GetNamedArray("rain");
                 JsonArray snowArray = hourly.GetNamedArray("snowfall");
                 JsonArray feelsArray = hourly.GetNamedArray("apparent_temperature");
                 JsonArray humidArray = hourly.GetNamedArray("relativehumidity_2m");
@@ -403,40 +461,7 @@ namespace WeatherTestApp2
                 JsonArray pressureArray = hourly.GetNamedArray("surface_pressure");
                 JsonArray visibleArray = hourly.GetNamedArray("visibility");
                 int code = (int)weatherCodeArray[0].GetNumber();
-
-                Dictionary<int, string> weatherDict = new Dictionary<int, string>
-                {
-                    {0, "Clear"},
-                    {1, "Mainly clear"},
-                    {2, "Partly cloudy"},
-                    {3, "Cloudy"},
-                    {45, "Fog"},
-                    {48, "Rime fog"},
-                    {51, "Drizzle"},
-                    {53, "Drizzle"},
-                    {55, "Drizzle"},
-                    {56, "Freezing drizzle"},
-                    {57, "Freezing drizzle"},
-                    {61, "Rain"},
-                    {63, "Rain"},
-                    {65, "Heavy rain"},
-                    {66, "Freezing rain"},
-                    {67, "Freezing rain"},
-                    {71, "Snow"},
-                    {73, "Snow"},
-                    {75, "Heavy snow"},
-                    {77, "Snow grains"},
-                    {80, "Rain showers"},
-                    {81, "Rain showers"},
-                    {82, "Heavy rain showers"},
-                    {85, "Snow showers"},
-                    {86, "Heavy snow showers"},
-                    {95, "Thunderstorm"},
-                    {96, "Thunderstorm with hail"},
-                    {99, "Thunderstorm with hail"},
-                };
-
-                string status = weatherDict.ContainsKey(code) ? weatherDict[code] : "Unknown";
+                string status = Localized("WeatherCode_" + weatherDict[code]);
                 TypeToday.Text = status;
 
                 double tempValueToday = tempArray.GetNumberAt(0);
@@ -456,20 +481,21 @@ namespace WeatherTestApp2
                 double humidToday = humidArray.GetNumberAt(0);
                 double pressToday = pressureArray.GetNumberAt(0);
                 double visibleToday = visibleArray.GetNumberAt(0);
-                visibleToday = visibleToday / 1000; //divide so it will be correct
-                TodayTemp.Text = Convert.ToString(tempValueToday, CultureInfo.InvariantCulture) + degreeSymbol;
-                TodayCondition.Text = "Wind: " + windSpeed.ToString() + " km/h";
-                TodayUV.Text = "UV: " + UVToday.ToString(CultureInfo.InvariantCulture);
-                TodayPrecip.Text = "Rain: " + rainToday.ToString(CultureInfo.InvariantCulture) + " mm";
-                TodaySnow.Text = "Snow: " + snowToday.ToString(CultureInfo.InvariantCulture) + " cm";
-                TodayFeelsLike.Text = "Feels like: " + feelsToday.ToString(CultureInfo.InvariantCulture) + degreeSymbol;
-                TodayHumid.Text = "Humidity: " + humidToday.ToString(CultureInfo.InvariantCulture) + "%";
-                TodayPressure.Text = "Pressure: " + pressToday.ToString(CultureInfo.InvariantCulture) + " hPa";
-                TodayVisible.Text = "Visibility: " + visibleToday.ToString(CultureInfo.InvariantCulture) + " km";
 
-                if (BGIMG != null && WeatherImages.ContainsKey(status))
+                visibleToday = visibleToday / 1000; //divide so it will be correct
+                TodayTemp.Text = tempValueToday.ToString("F0") + degreeSymbol;
+                TodayCondition.Text = Localized("WindLang", windSpeed).ToString();
+                UV.Text = Localized("UVValue", UVToday).ToString();
+                TodayUVValue.Text = UVToday.ToString();
+                TodayPrecip.Text = Localized("RainLang", rainToday).ToString();
+                TodaySnow.Text = Localized("SnowLang", snowToday).ToString();
+                TodayFeelsLike.Text = Localized("FeelsLang", feelsToday).ToString() + degreeSymbol;
+                TodayHumid.Text = Localized("HumidLang", humidToday).ToString();
+                TodayVisible.Text = Localized("VisibleLang", visibleToday).ToString();
+
+                if (BGIMG != null && WeatherImages.ContainsKey(code))
                 {
-                    BGIMG.Source = new BitmapImage(new System.Uri("ms-appx:///Assets/Backgrounds/" + WeatherImages[status], UriKind.Absolute));
+                    BGIMG.Source = new BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/" + WeatherImages[code], UriKind.Absolute));
                 }
                 else
                 {
@@ -479,78 +505,41 @@ namespace WeatherTestApp2
                 //UpdateTile(tempIntToday, windSpeed);
                 LiveTileYAY(tempValueToday, status);
 
-                string urlTomorrow = "https://api.open-meteo.com/v1/forecast?latitude="
-                    + lat.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + "&longitude="
-                    + lon.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + "&daily=temperature_2m_max,apparent_temperature_max,windspeed_10m_max,precipitation_sum,snowfall_sum,uv_index_max,relative_humidity_2m_max,weathercode,visibility_max,surface_pressure_max&timezone=auto";
-
-                string jsonTomorrow = await client.GetStringAsync(urlTomorrow);
-                JsonObject rootTomorrow = JsonObject.Parse(jsonTomorrow);
-
-
-
-                //Tomorrow
-                JsonObject dailyForecast = rootTomorrow.GetNamedObject("daily");
-                JsonArray uvTomorrow = dailyForecast.GetNamedArray("uv_index_max");
-                JsonArray precipTomorrow = dailyForecast.GetNamedArray("precipitation_sum");
-                JsonArray snowTomorrow = dailyForecast.GetNamedArray("snowfall_sum");
-                JsonArray tempMaxArray = dailyForecast.GetNamedArray("temperature_2m_max");
-                JsonArray windSpeedArray = dailyForecast.GetNamedArray("windspeed_10m_max");
-                JsonArray feelsLikeTomorrowArray = dailyForecast.GetNamedArray("apparent_temperature_max");
-                JsonArray humidTomorrowArray = dailyForecast.GetNamedArray("relative_humidity_2m_max");
-                JsonArray weatherCodeTomorrowArray = dailyForecast.GetNamedArray("weathercode");
-                JsonArray pressureTomorrowArray = dailyForecast.GetNamedArray("surface_pressure_max");
-                JsonArray visibleTomorrowArray = dailyForecast.GetNamedArray("visibility_max");
-                double tempValueTomorrow = tempMaxArray[1].GetNumber(); //1 - 1 day, 2 - 2 day, 3... - 3 and more days
-                if (!AppSettings.IsCelsius)
-                {
-                    tempValueTomorrow = tempValueTomorrow * 9 / 5 + 32; //c -> f
-                }
-                double windTomorrow = windSpeedArray[1].GetNumber();
-                double UVTomorrow = uvTomorrow[1].GetNumber();
-                double rainTomorrow = precipTomorrow[1].GetNumber();
-                double SnowTomorrow = snowTomorrow[1].GetNumber();
-                double feelsLikeTomorrow = feelsLikeTomorrowArray[1].GetNumber();
-                if (!AppSettings.IsCelsius)
-                {
-                    feelsLikeTomorrow = feelsLikeTomorrow * 9 / 5 + 32; //c -> f for feels like tomorrow
-                }
-                double HumidTomorrow = humidTomorrowArray[1].GetNumber();
-                int codeTomorrow = (int)weatherCodeTomorrowArray[1].GetNumber();
-                string statusTomorrow = weatherDict.ContainsKey(codeTomorrow) ? weatherDict[codeTomorrow] : "Unknown";
-                double PressTomorrow = pressureTomorrowArray[1].GetNumber();
-                double VisibleTomorrow = visibleTomorrowArray[1].GetNumber();
-                VisibleTomorrow = VisibleTomorrow / 1000;
-                TomorrowTemp.Text = Convert.ToString(tempValueTomorrow, CultureInfo.InvariantCulture) + degreeSymbol;
-                TomorrowCondition.Text = "Wind: " + windTomorrow.ToString() + " km/h";
-                TomorrowUV.Text = "UV: " + UVTomorrow.ToString(CultureInfo.InvariantCulture);
-                TomorrowPrecip.Text = "Rain: " + rainTomorrow.ToString(CultureInfo.InvariantCulture) + " mm";
-                TomorrowSnow.Text = "Snow: " + Convert.ToString(SnowTomorrow, CultureInfo.InvariantCulture) + " cm";
-                TomorrowFeelsLike.Text = "Feels like: " + Convert.ToString(feelsLikeTomorrow, CultureInfo.InvariantCulture) + degreeSymbol;
-                TomorrowHumid.Text = "Humidity: " + Convert.ToString(HumidTomorrow, CultureInfo.InvariantCulture) + "%";
-                TypeTomorrow.Text = statusTomorrow;
-                TomorrowPressure.Text = "Pressure: " + Convert.ToString(PressTomorrow, CultureInfo.InvariantCulture) + " hPa";
-                TomorrowVisible.Text = "Visibility: " + Convert.ToString(VisibleTomorrow, CultureInfo.InvariantCulture) + " km";
             }
             catch (Exception ex)
             {
-                var error = new MessageDialog("Error: " + ex.Message);
-                await error.ShowAsync();
+                MessageBox("Error occured or internet missing.");
+                return;
             }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            GetWeather(Latitude, Longitude);
-            LoadFiveDayForecast(Latitude, Longitude);
 
             base.OnNavigatedTo(e);
+
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
+            double lat = 52.52;
+            double lon = 13.41;
+            string city = "BERLIN";
+
+            if (localSettings.Values.ContainsKey("Latitude"))
+                lat = (double)localSettings.Values["Latitude"];
+            if (localSettings.Values.ContainsKey("Longitude"))
+                lon = (double)localSettings.Values["Longitude"];
+            if (localSettings.Values.ContainsKey("City"))
+                city = (string)localSettings.Values["City"];
 
             if (!AppSettings.IsCelsius)
             {
                 AppSettings.IsCelsius = false;
             }
+
+            MainPivot.Title = city.ToUpperInvariant();
+            GetWeather(lat, lon);
+            LoadHourlyForecast(lat, lon);
+            LoadDailyForecast(lat, lon);
         }
     }
 }
