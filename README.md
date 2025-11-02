@@ -12,6 +12,11 @@ Features:
 - Viewing visibility (km)
 
 
+Get Weather++
+
+[![Get Weather++ from Live Store](https://edge.live.net.co/images/store/2025_GetButton_SmallBlack.png)](https://store.live.net.co/app/317)
+                    
+
 
 How to use (GitHub version)
 - Download source code, unzip it, and put every file in the new project in VS2015 with SDK 8.1.
@@ -30,6 +35,9 @@ Attribution
 
 
 Weather provider: Open-Meteo - https://open-meteo.com
+
+
+Thanks to u/MildOff2024 on Reddit for Romanian translation
 
 
 
