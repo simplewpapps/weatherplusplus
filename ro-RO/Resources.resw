@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+  <data name="FeelsLang" xml:space="preserve">
+    <value>Se simte ca: {0}</value>
+</data>
+  <data name="HumidLang" xml:space="preserve">
+    <value>Umiditate: {0}%</value>
+</data>
+  <data name="PivotDaily.Header" xml:space="preserve">
+    <value>zilnic</value>
+</data>
+  <data name="PivotHourly.Header" xml:space="preserve">
+    <value>orar</value>
+</data>
+  <data name="PivotToday.Header" xml:space="preserve">
+    <value>astăzi</value>
+</data>
+  <data name="RainLang" xml:space="preserve">
+    <value>Ploaie: {0} mm</value>
+</data>
+  <data name="SnowLang" xml:space="preserve">
+    <value>Ninsoare: {0} cm</value>
+</data>
+  <data name="UVLang" xml:space="preserve">
+    <value>UV: {0}</value>
+</data>
+  <data name="VisibleLang" xml:space="preserve">
+    <value>Vizibilitate: {0} km</value>
+</data>
+  <data name="WindLang" xml:space="preserve">
+    <value>Vânt: {0} km/h</value>
+</data>
+  <data name="WeatherCode_0" xml:space="preserve">
+    <value>Senin</value>
+</data>
+  <data name="WeatherCode_1" xml:space="preserve">
+    <value>Mai ales senin</value>
+</data>
+  <data name="WeatherCode_2" xml:space="preserve">
+    <value>Parțial noros</value>
+</data>
+  <data name="WeatherCode_3" xml:space="preserve">
+    <value>Noros</value>
+</data>
+  <data name="WeatherCode_45" xml:space="preserve">
+    <value>Ceață</value>
+</data>
+  <data name="WeatherCode_48" xml:space="preserve">
+    <value>Ceață cu chiciură</value>
+</data>
+  <data name="WeatherCode_51" xml:space="preserve">
+    <value>Burniță</value>
+</data>
+  <data name="WeatherCode_53" xml:space="preserve">
+    <value>Burniță ușoară</value>
+</data>
+  <data name="WeatherCode_55" xml:space="preserve">
+    <value>Burniță moderată</value>
+</data>
+  <data name="WeatherCode_56" xml:space="preserve">
+    <value>Burniță înghețată</value>
+</data>
+  <data name="WeatherCode_57" xml:space="preserve">
+    <value>Burniță înghețată abundentă</value>
+</data>
+  <data name="WeatherCode_61" xml:space="preserve">
+    <value>Ploaie</value>
+</data>
+  <data name="WeatherCode_63" xml:space="preserve">
+    <value>Ploaie moderată</value>
+</data>
+  <data name="WeatherCode_65" xml:space="preserve">
+    <value>Ploaie abundentă</value>
+</data>
+  <data name="WeatherCode_66" xml:space="preserve">
+    <value>Ploaie înghețată</value>
+</data>
+  <data name="WeatherCode_67" xml:space="preserve">
+    <value>Ploaie înghețată abundentă</value>
+</data>
+  <data name="WeatherCode_71" xml:space="preserve">
+    <value>Ninsoare</value>
+</data>
+  <data name="WeatherCode_73" xml:space="preserve">
+    <value>Ninsoare moderată</value>
+</data>
+  <data name="WeatherCode_75" xml:space="preserve">
+    <value>Ninsoare abundentă</value>
+</data>
+  <data name="WeatherCode_77" xml:space="preserve">
+    <value>Granule de zăpadă</value>
+</data>
+  <data name="WeatherCode_80" xml:space="preserve">
+    <value>Averse de ploaie</value>
+</data>
+  <data name="WeatherCode_81" xml:space="preserve">
+    <value>Averse de ploaie moderate</value>
+</data>
+  <data name="WeatherCode_82" xml:space="preserve">
+    <value>Averse de ploaie abundente</value>
+</data>
+  <data name="WeatherCode_85" xml:space="preserve">
+    <value>Averse de ninsoare</value>
+</data>
+  <data name="WeatherCode_86" xml:space="preserve">
+    <value>Averse de ninsoare abundente</value>
+</data>
+  <data name="UVValue" xml:space="preserve">
+    <value>UV:</value>
+</data>
+  <data name="WeatherCode_95" xml:space="preserve">
+    <value>Furtună</value>
+</data>
+  <data name="WeatherCode_96" xml:space="preserve">
+    <value>Furtună cu grindină</value>
+</data>
+  <data name="WeatherCode_99" xml:space="preserve">
+    <value>Furtună severă cu grindină</value>
+</data>
+  <data name="AboutButton.Label" xml:space="preserve">
+    <value>despre și autori</value>
+</data>
+  <data name="CityButton.Label" xml:space="preserve">
+    <value>oraș</value>
+</data>
+  <data name="RefreshButton.Label" xml:space="preserve">
+    <value>refresh</value>
+</data>
+  <data name="SystemButton.Label" xml:space="preserve">
+    <value>sistem de grade</value>
+</data>
+
+</root>
